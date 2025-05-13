@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Table from "./Table";
 import Form from "./Form";
 
@@ -7,6 +7,27 @@ function MyApp() {
   const [quote, setQuote] = useState("Loading quote...");
   const [progress, setProgress] = useState(0);
   const [message, setMessage] = useState("");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+  const [activePage, setActivePage] = useState("home"); // "home" or "settings"
+
+  const sidebarRef = useRef();
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+        setSidebarOpen(false);
+      }
+    }
+
+    if (sidebarOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [sidebarOpen]);
 
   useEffect(() => {
     fetch("http://localhost:8000/users")
@@ -15,7 +36,6 @@ function MyApp() {
       .catch((error) => console.log(error));
   }, []);
 
-  // ✅ Dynamic motivational quote with fallback
   useEffect(() => {
     const quotes = [
       "Stay focused and keep toasting.",
@@ -104,53 +124,91 @@ function MyApp() {
   }
 
   return (
-    <div className="pink-background">
-      <div className="title-box">
-        <h1>CrumbList 🥖</h1>
+    <div className={`pink-background ${darkMode ? "dark-mode" : ""}`}>
+      {/* Hamburger */}
+      <div className="hamburger-menu" onClick={() => setSidebarOpen(!sidebarOpen)}>
+        ☰
       </div>
 
-      {/* Quote at the top */}
-      <div className="quote-box">
-        <blockquote>{quote}</blockquote>
+      {/* Sidebar */}
+      <div ref={sidebarRef} className={`sidebar ${sidebarOpen ? "open" : ""}`}>
+        <button className="sidebar-close" onClick={() => setSidebarOpen(false)}>×</button>
+        <ul>
+          <li><button className="sidebar-link" onClick={() => setActivePage("home")}>🏠 Home</button></li>
+          <li><button className="sidebar-link">📆 Calendar View</button></li>
+          <li><button className="sidebar-link">👤 Profile</button></li>
+          <li><button className="sidebar-link" onClick={() => setActivePage("settings")}>⚙️ Settings</button></li>
+        </ul>
       </div>
 
-      <div className="category-grid">
-        {[...Array(6)].map((_, i) => (
-          <div key={i} className="category-box">
-            Category {i + 1}
+      {/* SETTINGS PAGE */}
+      {activePage === "settings" && (
+        <div className="settings-page">
+          <h2>⚙️ Settings</h2>
+          <label>
+            <input
+              type="checkbox"
+              checked={darkMode}
+              onChange={() => setDarkMode(!darkMode)}
+            />
+            Enable Dark Mode
+          </label>
+          <div className="settings-placeholder">
+            <p>🛠 More settings coming soon:</p>
+            <ul>
+              <li>Font size</li>
+              <li>Task sorting preferences</li>
+              <li>Show/hide motivational quotes</li>
+            </ul>
           </div>
-        ))}
-      </div>
-
-      <div className="butter-row">
-        <div className="butter-tasks">
-          <div className="butter-title">🧈 Butter Tasks</div>
-          <textarea className="butter-input" placeholder="Write a quick task..." />
         </div>
-        <button className="calendar-button">Calendar View</button>
-      </div>
+      )}
 
-      <Table characterData={characters} removeCharacter={removeOneCharacter} />
-      <Form handleSubmit={updateList} />
-
-      {/* Toast Your Tasks Progress Bar */}
-      <div className="toast-section">
-        <h2>Toast Your Tasks…</h2>
-
-        <div className="toast-bar-wrapper">
-          <div className="emoji-fire" style={{ left: `calc(${progress}% - 12px)` }}>🔥</div>
-
-          <div className="toast-bar">
-            <div className="toast-fill" style={{ width: `${progress}%` }}></div>
-            <div className="toast-text">Task Progress ({progress}%)</div>
+      {/* HOME PAGE */}
+      {activePage === "home" && (
+        <>
+          <div className="title-box">
+            <h1>CrumbList 🥖</h1>
           </div>
 
-          <span className="emoji-bread">{progress === 100 ? "🍞" : "🍞"}</span>
-        </div>
+          <div className="quote-box">
+            <blockquote>{quote}</blockquote>
+          </div>
 
-        <p className="toast-message">{message}</p>
-        <p className="crumb-saying">{quote}</p>
-      </div>
+          <div className="category-grid">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="category-box">
+                Category {i + 1}
+              </div>
+            ))}
+          </div>
+
+          <div className="butter-row">
+            <div className="butter-tasks">
+              <div className="butter-title">🧈 Butter Tasks</div>
+              <textarea className="butter-input" placeholder="Write a quick task..." />
+            </div>
+            <button className="calendar-button">Calendar View</button>
+          </div>
+
+          <Table characterData={characters} removeCharacter={removeOneCharacter} />
+          <Form handleSubmit={updateList} />
+
+          <div className="toast-section">
+            <h2>Toast Your Tasks…</h2>
+            <div className="toast-bar-wrapper">
+              <div className="emoji-fire" style={{ left: `calc(${progress}% - 12px)` }}>🔥</div>
+              <div className="toast-bar">
+                <div className="toast-fill" style={{ width: `${progress}%` }}></div>
+                <div className="toast-text">Task Progress ({progress}%)</div>
+              </div>
+              <span className="emoji-bread">{progress === 100 ? "🍞" : "🍞"}</span>
+            </div>
+            <p className="toast-message">{message}</p>
+            <p className="crumb-saying">{quote}</p>
+          </div>
+        </>
+      )}
     </div>
   );
 }

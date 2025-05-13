@@ -1334,6 +1334,129 @@ caption {
   font-style: italic;
   color: #333;
 }
+.hamburger-menu {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  font-size: 1.8rem;
+  cursor: pointer;
+  z-index: 999;
+  color: white;
+  background: #3e2c24;
+  padding: 8px 12px;
+  border-radius: 5px;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -250px;
+  width: 220px;
+  height: 100vh;
+  background-color: #3e2c24;
+  color: white;
+  padding: 20px;
+  transition: left 0.3s ease-in-out;
+  z-index: 998;
+}
+
+.sidebar.open {
+  left: 0;
+}
+
+.sidebar-close {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  color: white;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  cursor: pointer;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 50px;
+}
+
+.sidebar-link {
+  display: block;
+  background: none;
+  color: white;
+  border: none;
+  font-size: 1.1rem;
+  padding: 10px 0;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+}
+/* === Full Settings Page === */
+.settings-page {
+  background: #fff8e1;
+  color: #333;
+  padding: 40px;
+  margin: 40px auto;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+  text-align: left;
+}
+
+.settings-page h2 {
+  margin-top: 0;
+  font-size: 1.6rem;
+}
+
+.settings-page label {
+  display: block;
+  margin: 20px 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.settings-placeholder {
+  font-size: 0.95rem;
+  margin-top: 20px;
+}
+
+.dark-mode .settings-page {
+  background: #2c2c2c;
+  color: #f0f0f0;
+  box-shadow: 0 2px 12px rgba(255, 255, 255, 0.05);
+}
+
+/* === Dark Mode === */
+.dark-mode {
+  background-color: #1e1e1e;
+  color: #f5f5f5;
+}
+
+.dark-mode .quote-box,
+.dark-mode .settings-panel {
+  background-color: #2c2c2c;
+  color: #f5f5f5;
+  border-color: #555;
+}
+
+.dark-mode .toast-bar {
+  background-color: #333;
+}
+
+.dark-mode .toast-fill {
+  background-color: #8b4513;
+}
+
+.dark-mode .sidebar {
+  background-color: #2c2c2c;
+}
+
+.dark-mode .hamburger-menu {
+  background-color: #2c2c2c;
+  color: white;
+}
 
 
 /*
