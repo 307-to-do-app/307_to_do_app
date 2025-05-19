@@ -67,7 +67,7 @@ function MyApp() {
         </div>
 
         <div className="button-col">
-          <button className="add-task-home-button" onClick={() => navigate('/add-task')}>
+          <button className="add-task-button" onClick={() => navigate('/add-task')}>
             Add Task
           </button>
           <button className="calendar-button">Calendar View</button>

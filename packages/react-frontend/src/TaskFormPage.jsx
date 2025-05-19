@@ -23,13 +23,18 @@ function TaskFormPage() {
 
     return (
         <div className='form-page'>
-            <h2>Add a New Task</h2>
-            <TaskInputForm categories = {categories} onSubmit={handleFormSubmit} />
+          <h2 className='form-heading'>Add a New Task 📝</h2>
+      
+          <TaskInputForm categories={categories} onSubmit={handleFormSubmit} />
+      
+          <div className="form-buttons">
             <button className="back-button" onClick={() => navigate('/')}>
-                ← Back to CrumbList
+              ← Back to CrumbList
             </button>
+          </div>
         </div>
-    );
+      );
+      
 }
 
 export default TaskFormPage;
