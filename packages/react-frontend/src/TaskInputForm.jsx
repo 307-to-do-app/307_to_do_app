@@ -6,7 +6,8 @@ const TaskInputForm = ({ onSubmit, categories }) => {
     dueDate: '',
     category: '',
     notes: '',
-    expectedTime: ''
+    expectedTime: '',
+    urgency: ''
   });
 
   const handleChange = (e) => {
@@ -22,7 +23,8 @@ const TaskInputForm = ({ onSubmit, categories }) => {
       dueDate: '',
       category: '',
       notes: '',
-      expectedTime: ''
+      expectedTime: '',
+      urgency: ''
     });
   };
 
@@ -44,13 +46,21 @@ const TaskInputForm = ({ onSubmit, categories }) => {
       />
 
       <select name="category" value={task.category} onChange={handleChange}>
-        <option value="">Select category</option>
+        <option value="">Select category </option>
         {categories.map((cat, idx) => (
           <option key={idx} value={cat.name}>
             {cat.name}
           </option>
         ))}
       </select>
+
+      <select name="urgency" value={task.urgency} onChange={handleChange}>
+        <option value="">Select urgency (1 = low, 10 = high)</option>
+        {[...Array(10)].map((_, i) => (
+            <option key={i + 1} value={i + 1}>{i + 1}</option>
+        ))}
+      </select>
+
 
       <textarea
         name="notes"
@@ -67,7 +77,8 @@ const TaskInputForm = ({ onSubmit, categories }) => {
         onChange={handleChange}
       />
 
-      <button type="submit">Add Task</button>
+        <button type="submit" className="add-task-button"> Add Task</button>
+
     </form>
 
   );
