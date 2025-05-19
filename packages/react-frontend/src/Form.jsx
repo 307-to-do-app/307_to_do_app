@@ -1,49 +1,40 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 
-function Form(props) {
-  const [person, setPerson] = useState({
+function Form({ handleSubmit }) {
+  const [form, setForm] = useState({
     name: "",
     job: "",
+    dueDate: "",
+    completed: false,
   });
 
-  function handleChange(event) {
-    const { name, value } = event.target;
-    if (name === "job") setPerson({ name: person["name"], job: value });
-    else setPerson({ name: value, job: person["job"] });
+  function handleChange(e) {
+    const { name, value, type, checked } = e.target;
+    setForm({
+      ...form,
+      [name]: type === "checkbox" ? checked : value,
+    });
   }
 
-  function submitForm() {
-    props.handleSubmit(person);
-    setPerson({ name: "", job: "" });
+  function onSubmit(e) {
+    e.preventDefault();
+    handleSubmit(form);
+    setForm({ name: "", job: "", dueDate: "", completed: false });
   }
 
   return (
-    <form>
-      <label htmlFor="name">Name</label>
-      <input
-        type="text"
-        name="name"
-        id="name"
-        value={person.name}
-        onChange={handleChange}
-      />
-      <label htmlFor="job">Job</label>
-      <input
-        type="text"
-        name="job"
-        id="job"
-        value={person.job}
-        onChange={handleChange}
-      />
-      <input type="button" value="Submit" onClick={submitForm} />
+    <form onSubmit={onSubmit}>
+      <input name="name" value={form.name} onChange={handleChange} placeholder="Task name" required />
+      <input name="job" value={form.job} onChange={handleChange} placeholder="Category/Job" required />
+      <input type="date" name="dueDate" value={form.dueDate} onChange={handleChange} />
+      <label>
+        Completed:
+        <input type="checkbox" name="completed" checked={form.completed} onChange={handleChange} />
+      </label>
+      <button type="submit">Add Task</button>
     </form>
   );
 }
 
-// ensures handleSubmit is a function and must be passed in (cant use <Form /> without a handleSubmit)
-Form.propTypes = {
-  handleSubmit: PropTypes.func.isRequired,
-};
-
 export default Form;
+
