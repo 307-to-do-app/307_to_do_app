@@ -1250,6 +1250,81 @@ caption {
   min-width: 150px;
 }
 
+.form-page {
+  padding: 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.back-button {
+  /* margin-top: 1rem; */
+  padding: 0.5rem 1rem;
+  background-color: #ffda77;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  background-color: #ffda77; 
+  transform: scale(1.02);
+  transition: all 0.2s ease;
+}
+
+/* the one on the home page  */
+.add-task-home-button{ 
+  background-color:#ffda77;
+  color: #333;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 0.5rem; /* adds space between buttons */
+  width: 100%
+}
+
+.add-task-home-button:hover {
+  background-color: #ffda77;
+  transform: scale(1.02);
+  transition: all 0.2s ease;
+}
+
+.button-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* or center */
+}
+
+/* For form page */
+.add-task-button {
+  background-color: #ffda77; 
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 1rem; 
+  transition: all 0.2s ease;
+}
+
+.add-task-button:hover {
+  background-color: #ffd878;
+  color: white;
+  transform: scale(1.02);
+}
+
+
+
+
+
+
+
+
+
+
 
 /*
  * Navigation

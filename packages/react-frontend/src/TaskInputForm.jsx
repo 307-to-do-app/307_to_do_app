@@ -67,7 +67,8 @@ const TaskInputForm = ({ onSubmit, categories }) => {
         onChange={handleChange}
       />
 
-      <button type="submit">Add Task</button>
+        <button type="submit" className="add-task-button"> Add Task</button>
+
     </form>
 
   );

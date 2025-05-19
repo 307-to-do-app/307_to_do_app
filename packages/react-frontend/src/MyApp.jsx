@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import TaskInputForm from "./TaskInputForm";
+import { useNavigate } from "react-router-dom";
 
 function MyApp() {
-  // creating a tasks state to keep track of all tasks locally 
   const [tasks, setTasks] = useState([]); 
+  const navigate = useNavigate();
 
   const categories = [
     { name: "School" },
@@ -14,7 +14,6 @@ function MyApp() {
     { name: "Chores" },
   ];
 
-  // Remove a task by ID
   function removeTask(id) {
     fetch(`http://localhost:8000/tasks/${id}`, {
       method: "DELETE",
@@ -31,7 +30,6 @@ function MyApp() {
       });
   }
 
-  // Fetch all tasks
   useEffect(() => {
     fetch("http://localhost:8000/tasks")
       .then((res) => res.json())
@@ -41,28 +39,9 @@ function MyApp() {
       });
   }, []);
 
-  // Add a new task
   function addTask(task) {
     setTasks((prevTasks) => [...prevTasks, task]);
-
-    // fetch("http://localhost:8000/tasks", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(task),
-    // })
-    //   .then((res) => {
-    //     if (res.status === 201) return res.json();
-    //     throw new Error("Failed to create task");
-    //   })
-    //   .then((newTask) => setTasks([...tasks, newTask]))
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
   }
-
-
 
   return (
     <div className="pink-background">
@@ -86,12 +65,16 @@ function MyApp() {
             placeholder="Write a quick task..."
           ></textarea>
         </div>
-        <button className="calendar-button">Calendar View</button>
+
+        <div className="button-col">
+          <button className="add-task-home-button" onClick={() => navigate('/add-task')}>
+            Add Task
+          </button>
+          <button className="calendar-button">Calendar View</button>
+        </div>
       </div>
 
-      <TaskInputForm categories={categories} onSubmit={addTask} />
-
-      <div className="task-preview">
+      {/* <div className="task-preview">
         <h2>Task Preview</h2>
         <ul>
           {tasks.map((task, idx) => (
@@ -102,8 +85,7 @@ function MyApp() {
             </li>
           ))}
         </ul>
-       </div>
-
+      </div> */}
     </div>
   );
 }
