@@ -9,7 +9,7 @@ const Signup = () => {
 
   const handleSignup = async () => {
     try {
-      const response = await fetch("https://crumblist-g5htfcg7afh8ehdw.canadacentral-01.azurewebsites.net/signup", {
+      const response = await fetch("http://localhost:8000/signup", {//crumblist-g5htfcg7afh8ehdw.canadacentral-01.azurewebsites.net/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
