@@ -39,7 +39,7 @@ const TaskSchema = new mongoose.Schema(
       },
     },
   },
-  { collection: "task_list" }
+  { collection: "task_list" },
 );
 
 const Task = mongoose.model("Task", TaskSchema);

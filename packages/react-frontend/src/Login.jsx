@@ -9,13 +9,16 @@ const Login = () => {
 
   const handleSignIn = async () => {
     try {
-      const response = await fetch("https://crumblist-g5htfcg7afh8ehdw.canadacentral-01.azurewebsites.net/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        "https://crumblist-g5htfcg7afh8ehdw.canadacentral-01.azurewebsites.net/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
         },
-        body: JSON.stringify({ username, password }),
-      });
+      );
 
       const result = await response.json();
 
@@ -55,7 +58,10 @@ const Login = () => {
           <button className="butter-button" onClick={handleSignIn}>
             🧈 Sign In
           </button>
-          <button className="signup-link-button" onClick={() => navigate("/signup")}>
+          <button
+            className="signup-link-button"
+            onClick={() => navigate("/signup")}
+          >
             New? Sign Up →
           </button>
         </div>

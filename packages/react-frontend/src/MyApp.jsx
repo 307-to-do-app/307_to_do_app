@@ -1,6 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
+import CategoryPage from "./CategoryPage";
+
+
+const EditableCategory = ({ name, taskCount, onClick }) => {
+  return (
+    <div
+      className="category-box"
+      style={{ cursor: "pointer" }}
+      onClick={onClick}
+    >
+      <h3>{name}</h3>
+      <p className="task-count">({taskCount} tasks)</p>
 
 // Simple Cute Bread Component (Stationary)
 const CuteBread = ({ size = "40px", className = "" }) => {
@@ -279,7 +291,7 @@ function MyApp() {
   const [progress, setProgress] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [activePage, setActivePage] = useState("home");
+  const location = useLocation();
   const navigate = useNavigate();
   const sidebarRef = useRef();
 
@@ -333,29 +345,35 @@ function MyApp() {
 
   // Initialize categories from localStorage or use defaults
   const [categories, setCategories] = useState(() => {
-    const savedCategories = localStorage.getItem('crumblist-categories');
-    if (savedCategories) {
-      return JSON.parse(savedCategories);
-    }
-    return [
-      { name: "School" },
-      { name: "Work" },
-      { name: "Errands" },
-      { name: "Health" },
-      { name: "Fitness" },
-      { name: "Chores" }
-    ];
+    const saved = localStorage.getItem("crumblist-categories");
+    return saved
+      ? JSON.parse(saved)
+      : [
+          { name: "School" },
+          { name: "Work" },
+          { name: "Errands" },
+          { name: "Health" },
+          { name: "Fitness" },
+          { name: "Chores" },
+        ];
   });
 
-  const butterTasks = tasks.filter((task) => Number(task.ease) < settings.butterThreshold);
+
+  const butterTasks = tasks
+    .filter((task) => Number(task.ease) < 60)
+    .sort((a, b) => new Date(a.due_date) - new Date(b.due_date));
+
   const normalTasks = tasks.filter((task) => Number(task.ease) >= settings.butterThreshold);
 
-  // Group normal tasks by category
+  const butterTaskIds = butterTasks.map((task) => task._id);
+  const selectedButterIds = checkedTasks.filter((id) => butterTaskIds.includes(id));
+
+
   const tasksByCategory = {};
   categories.forEach((cat) => {
-    tasksByCategory[cat.name] = normalTasks.filter(
-      (task) => task.category === cat.name
-    );
+    tasksByCategory[cat.name] = normalTasks
+      .filter((task) => task.category?.toLowerCase() === cat.name.toLowerCase())
+      .sort((a, b) => new Date(a.due_date) - new Date(b.due_date));
   });
 
   // Apply theme class to body
@@ -477,42 +495,33 @@ function MyApp() {
 
   // Close sidebar when clicking outside
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+    function handleClickOutside(e) {
+      if (sidebarRef.current && !sidebarRef.current.contains(e.target)) {
         setSidebarOpen(false);
       }
     }
-
     if (sidebarOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     }
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [sidebarOpen]);
 
-  // Fetch tasks from backend
-  const fetchTasks = () => {
-    fetch("https://crumblist-g5htfcg7afh8ehdw.canadacentral-01.azurewebsites.net/tasks")
+  useEffect(() => {
+    fetch(
+      "https://crumblist-g5htfcg7afh8ehdw.canadacentral-01.azurewebsites.net/tasks",
+    )
       .then((res) => res.json())
-      .then((json) => {
-        console.log("Fetched tasks:", json.task_list);
-        setTasks(json.task_list || []);
-      })
-      .catch((error) => {
-        console.error("Error fetching tasks:", error);
+      .then((json) => setTasks(json.task_list || []))
+      .catch((err) => {
+        console.error("Error fetching tasks:", err);
         setTasks([]);
       });
-  };
-
-  useEffect(() => {
-    fetchTasks();
   }, []);
 
-  // Save categories to localStorage whenever they change
   useEffect(() => {
-    localStorage.setItem('crumblist-categories', JSON.stringify(categories));
+    localStorage.setItem("crumblist-categories", JSON.stringify(categories));
   }, [categories]);
 
   useEffect(() => {
@@ -522,27 +531,49 @@ function MyApp() {
     setProgress(percent);
   }, [checkedTasks, tasks]);
 
+  useEffect(() => {
+    const fallbackQuotes = [
+      "Stay focused and keep toasting.",
+      "Small crumbs lead to big loaves.",
+      "No task is too crusty to conquer.",
+    ];
+    const fallback =
+      fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
+    fetch("https://type.fit/api/quotes")
+      .then((res) => res.json())
+      .then((data) => {
+        const random = data[Math.floor(Math.random() * data.length)];
+        setQuote(
+          random?.text
+            ? `${random.text} – Mr. Crumb`
+            : `${fallback} – Mr. Crumb`,
+        );
+      })
+      .catch(() => setQuote(`${fallback} – Mr. Crumb`));
+  }, []);
+
+
   const toggleChecked = (taskId) => {
     setCheckedTasks((prev) =>
       prev.includes(taskId)
         ? prev.filter((id) => id !== taskId)
-        : [...prev, taskId]
+        : [...prev, taskId],
     );
   };
 
-  const completeCheckedTasks = () => {
-    const updatedTasks = tasks.filter((task) => {
-      return !checkedTasks.includes(task._id);
-    });
-
+  const completeCheckedTasks = (idsToDelete = checkedTasks) => {
+    const updatedTasks = tasks.filter(
+      (task) => !idsToDelete.includes(task._id),
+    );
     setTasks(updatedTasks);
-    setCheckedTasks([]);
-
-    // Delete from backend
-    checkedTasks.forEach((id) => {
-      fetch(`https://crumblist-g5htfcg7afh8ehdw.canadacentral-01.azurewebsites.net/tasks/${id}`, {
-        method: "DELETE",
-      }).catch((err) => console.error("Delete failed", err));
+    setCheckedTasks((prev) => prev.filter((id) => !idsToDelete.includes(id)));
+    idsToDelete.forEach((id) => {
+      fetch(
+        `https://crumblist-g5htfcg7afh8ehdw.canadacentral-01.azurewebsites.net/tasks/${id}`,
+        {
+          method: "DELETE",
+        },
+      ).catch((err) => console.error("Delete failed", err));
     });
   };
 
@@ -553,14 +584,28 @@ function MyApp() {
   };
 
   const openCategoryModal = (categoryName) => {
-    setSelectedCategory(categoryName);
-  };
-
-  const closeCategoryModal = () => {
-    setSelectedCategory(null);
+    navigate(`/category/${categoryName}`);
   };
 
   return (
+    <div className="pink-background">
+      {location.pathname.startsWith("/category/") ? (
+        <CategoryPage
+          tasks={tasks}
+          checkedTasks={checkedTasks}
+          toggleChecked={toggleChecked}
+          completeCheckedTasks={completeCheckedTasks}
+        />
+      ) : (
+        <>
+          {/* Hamburger Menu */}
+          <div
+            className="hamburger-menu"
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+          >
+            ☰
+          </div>
+
     <div className={`pink-background theme-${settings.colorTheme} ${settings.darkMode ? 'dark-mode' : ''}`}>
       {/* Hamburger Menu */}
       <div
@@ -570,55 +615,48 @@ function MyApp() {
         ☰
       </div>
 
-      {/* Sidebar */}
-      <div ref={sidebarRef} className={`sidebar ${sidebarOpen ? "open" : ""}`}>
-        <button className="sidebar-close" onClick={() => setSidebarOpen(false)}>
-          ×
-        </button>
-        <ul>
-          <li>
+          {/* Sidebar */}
+          <div
+            ref={sidebarRef}
+            className={`sidebar ${sidebarOpen ? "open" : ""}`}
+          >
             <button
-              className="sidebar-link"
-              onClick={() => {
-                setActivePage("home");
-                setSidebarOpen(false);
-              }}
+              className="sidebar-close"
+              onClick={() => setSidebarOpen(false)}
             >
-              🏠 Home
+              ×
             </button>
-          </li>
-          <li>
-            <button 
-              className="sidebar-link"
-              onClick={() => {
-                setActivePage("calendar");
-                setSidebarOpen(false);
-              }}
-            >
-              📆 Calendar View
-            </button>
-          </li>
-          <li>
-            <button 
-              className="sidebar-link"
-              onClick={() => {
-                setActivePage("profile");
-                setSidebarOpen(false);
-              }}
-            >
-              👤 Profile
-            </button>
-          </li>
-          <li>
-            <button
-              className="sidebar-link"
-              onClick={() => {
-                setActivePage("settings");
-                setSidebarOpen(false);
-              }}
-            >
-              ⚙️ Settings
-            </button>
+            <ul>
+              <li>
+                <button className="sidebar-link" onClick={() => navigate("/")}>
+                  🏠 Home
+                </button>
+              </li>
+              <li>
+                <button
+                  className="sidebar-link"
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  📆 Calendar View
+                </button>
+              </li>
+              <li>
+                <button
+                  className="sidebar-link"
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  👤 Profile
+                </button>
+              </li>
+              <li>
+                <button
+                  className="sidebar-link"
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  ⚙️ Settings
+                </button>
+              </li>
+            </ul>
           </li>
         </ul>
       </div>
@@ -830,19 +868,14 @@ function MyApp() {
               )}
             </div>
           </div>
-        </div>
-      )}
 
-      {/* Home Page */}
-      {activePage === "home" && (
-        <>
+          {/* Home Page Content */}
           <div className="title-box">
             <h1>
               CrumbList <CuteBread size="35px" />
             </h1>
           </div>
 
-          {/* Category Grid */}
           <div className="category-grid">
             {categories.map((cat, index) => (
               <EditableCategory
@@ -856,52 +889,24 @@ function MyApp() {
             ))}
           </div>
 
-          {/* Category Modal */}
-          {selectedCategory && (
-            <div className="modal-overlay" onClick={closeCategoryModal}>
-              <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                <div className="modal-header">
-                  <h2>{selectedCategory} Tasks</h2>
-                  <button className="close-button" onClick={closeCategoryModal}>
-                    ×
-                  </button>
-                </div>
-                <div className="modal-body">
-                  {tasksByCategory[selectedCategory]?.length === 0 ? (
-                    <p>No tasks in this category yet.</p>
-                  ) : (
-                    <ul className="modal-task-list">
-                      {tasksByCategory[selectedCategory]?.map((task) => (
-                        <li key={task._id}>
-                          <label>
-                            <input
-                              type="checkbox"
-                              checked={checkedTasks.includes(task._id)}
-                              onChange={() => toggleChecked(task._id)}
-                            />
-                            <strong>{task.name}</strong> - {task.ease} minutes
-                            {task.description && <p>{task.description}</p>}
-                          </label>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Butter Tasks */}
           <div className="butter-row">
             <div className="butter-tasks">
-              <div className="butter-title">🧈 Butter Tasks <span className="task-count">({butterTasks.length})</span></div>
+              <div className="butter-title">
+                🧈 Butter Tasks{" "}
+                <span className="task-count">({butterTasks.length})</span>
+              </div>
               {butterTasks.length === 0 ? (
+                <p className="no-butter">
+                  No quick tasks under 60 minutes yet.
+                </p>
                 <p className="no-butter">No quick tasks under {settings.butterThreshold} minutes yet.</p>
               ) : (
                 <div className="butter-task-grid">
                   {butterTasks.map((task) => (
                     <div key={task._id} className="butter-task-grid-row">
-                      <span>{task.name} ({task.ease} min)</span>
+                      <span>
+                        {task.name} ({task.ease} min)
+                      </span>
                       <input
                         type="checkbox"
                         checked={checkedTasks.includes(task._id)}
@@ -911,9 +916,12 @@ function MyApp() {
                   ))}
                 </div>
               )}
-              {checkedTasks.length > 0 && (
-                <button className="complete-button" onClick={completeCheckedTasks}>
-                  Remove Selected ({checkedTasks.length})
+              {selectedButterIds.length > 0 && (
+                <button
+                  className="complete-button"
+                  onClick={() => completeCheckedTasks(selectedButterIds)}
+                >
+                  Remove Selected ({selectedButterIds.length})
                 </button>
               )}
             </div>
@@ -933,12 +941,10 @@ function MyApp() {
             </div>
           </div>
 
-          {/* Quote */}
           <div className="quote-box">
             <blockquote>{quote}</blockquote>
           </div>
 
-          {/* Toast Progress Bar */}
           <div className="toast-section">
             <h2>Toast Your Tasks…</h2>
             <div className="toast-bar-wrapper">
@@ -958,7 +964,7 @@ function MyApp() {
             </div>
           </div>
         </>
-      )}   
+      )}
     </div>
   );
 }

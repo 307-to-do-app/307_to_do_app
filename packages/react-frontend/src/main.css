@@ -1221,6 +1221,12 @@ caption {
   font-size: 1.1rem;
 }
 
+.category-page {
+  padding: 1rem 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
 /* Task Count Styling */
 .task-count {
   font-size: 12px;
@@ -1488,7 +1494,9 @@ caption {
 }
 
 /* === Pages === */
-.settings-page, .calendar-page, .profile-page {
+.settings-page,
+.calendar-page,
+.profile-page {
   background: #fff8e1;
   color: #333;
   padding: 40px;
@@ -1500,10 +1508,12 @@ caption {
   text-align: left;
 }
 
-.settings-page h2, .calendar-page h2, .profile-page h2 {
+.settings-page h2,
+.calendar-page h2,
+.profile-page h2 {
   margin-top: 0;
   font-size: 1.6rem;
-  color: #8B4513;
+  color: #8b4513;
 }
 
 .settings-page label {
@@ -1513,7 +1523,9 @@ caption {
   font-weight: 500;
 }
 
-.settings-placeholder, .calendar-placeholder, .profile-placeholder {
+.settings-placeholder,
+.calendar-placeholder,
+.profile-placeholder {
   font-size: 0.95rem;
   margin-top: 20px;
   background: white;
@@ -1617,9 +1629,10 @@ caption {
 }
 
 .modal-content {
-  background: white;
+  background: #fff;
   border-radius: 10px;
-  padding: 20px;
+  /* padding: 20px; */
+  padding: 2rem;
   max-width: 500px;
   width: 90%;
   max-height: 70vh;
@@ -1638,7 +1651,7 @@ caption {
 
 .modal-header h2 {
   margin: 0;
-  color: #8B4513;
+  color: #8b4513;
 }
 
 .close-button {
@@ -1695,13 +1708,30 @@ caption {
 }
 
 .modal-task-list strong {
-  color: #8B4513;
+  color: #8b4513;
 }
 
 .modal-task-list p {
   margin: 5px 0 0 0;
   color: #666;
   font-size: 14px;
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.task-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background: white;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
 /* === Motivational Quote Box === */
@@ -1796,14 +1826,14 @@ caption {
 .task-form input:focus,
 .task-form select:focus,
 .task-form textarea:focus {
-  border-color: #8B4513;
+  border-color: #8b4513;
   outline: none;
 }
 
 .task-form button {
   width: 100%;
   padding: 12px;
-  background: #8B4513;
+  background: #8b4513;
   color: white;
   border: none;
   border-radius: 6px;
@@ -1814,7 +1844,45 @@ caption {
 }
 
 .task-form button:hover {
-  background: #A0522D;
+  background: #a0522d;
+}
+
+/* add and remove task button same size  */
+.full-width-button {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  text-align: center;
+  cursor: pointer;
+  margin-top: 1rem;
+  margin: 0;
+}
+
+.full-width-button.remove {
+  background-color: #28a745;
+  color: white;
+  border: none;
+}
+
+.full-width-button.add {
+  background-color: #ffda77;
+  color: #333;
+  border: none;
+}
+
+/* back button in category page  */
+.back-button.yellow {
+  background-color: #ffda77;
+  color: #333;
+  border: none;
+  font-weight: bold;
+}
+
+.back-button.yellow:hover {
+  background-color: #ffd878;
+  color: #333;
 }
 
 /* Calendar View Button */

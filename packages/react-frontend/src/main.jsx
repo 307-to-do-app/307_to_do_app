@@ -7,7 +7,6 @@ import TaskFormPage from "./TaskFormPage";
 import Login from "./Login"; // also near your other imports
 import Signup from "./Signup";
 
-
 const container = document.getElementById("root");
 const root = createRoot(container);
 
@@ -19,7 +18,8 @@ root.render(
         <Route path="/add-task" element={<TaskFormPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/category/:categoryName" element={<MyApp />} />
       </Routes>
     </BrowserRouter>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

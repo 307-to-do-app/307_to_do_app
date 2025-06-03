@@ -14,8 +14,11 @@ const TaskInputForm = ({ onSubmit, categories }) => {
   // Update form when categories change
   useEffect(() => {
     // If current selected category no longer exists, clear it
-    if (task.category && !categories.some(cat => cat.name === task.category)) {
-      setTask(prev => ({ ...prev, category: "" }));
+    if (
+      task.category &&
+      !categories.some((cat) => cat.name === task.category)
+    ) {
+      setTask((prev) => ({ ...prev, category: "" }));
     }
   }, [categories, task.category]);
 
@@ -26,7 +29,7 @@ const TaskInputForm = ({ onSubmit, categories }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     // Map frontend fields to backend schema
     const backendTask = {
       name: task.title,
@@ -34,12 +37,14 @@ const TaskInputForm = ({ onSubmit, categories }) => {
       description: task.notes,
       due_date: task.dueDate,
       urgency: Number(task.urgency),
-      ease: Number(task.expectedTime.toString().replace(/\D/g, '')) || Number(task.expectedTime), // Remove non-digits
+      ease:
+        Number(task.expectedTime.toString().replace(/\D/g, "")) ||
+        Number(task.expectedTime), // Remove non-digits
     };
 
     console.log("Submitting task:", backendTask);
     onSubmit(backendTask);
-    
+
     // Clear form
     setTask({
       title: "",
@@ -52,7 +57,9 @@ const TaskInputForm = ({ onSubmit, categories }) => {
   };
 
   // Filter out categories with empty names
-  const validCategories = categories.filter(cat => cat.name && cat.name.trim() !== "");
+  const validCategories = categories.filter(
+    (cat) => cat.name && cat.name.trim() !== "",
+  );
 
   return (
     <form className="task-form" onSubmit={handleSubmit}>
@@ -64,7 +71,7 @@ const TaskInputForm = ({ onSubmit, categories }) => {
         onChange={handleChange}
         required
       />
-      
+
       <input
         type="date"
         name="dueDate"
@@ -72,8 +79,13 @@ const TaskInputForm = ({ onSubmit, categories }) => {
         onChange={handleChange}
         required
       />
-      
-      <select name="category" value={task.category} onChange={handleChange} required>
+
+      <select
+        name="category"
+        value={task.category}
+        onChange={handleChange}
+        required
+      >
         <option value="">Select category</option>
         {validCategories.map((cat, idx) => (
           <option key={idx} value={cat.name}>
@@ -81,8 +93,13 @@ const TaskInputForm = ({ onSubmit, categories }) => {
           </option>
         ))}
       </select>
-      
-      <select name="urgency" value={task.urgency} onChange={handleChange} required>
+
+      <select
+        name="urgency"
+        value={task.urgency}
+        onChange={handleChange}
+        required
+      >
         <option value="">Select urgency (1 = low, 10 = high)</option>
         {[...Array(10)].map((_, i) => (
           <option key={i + 1} value={i + 1}>
@@ -90,7 +107,7 @@ const TaskInputForm = ({ onSubmit, categories }) => {
           </option>
         ))}
       </select>
-      
+
       <input
         type="number"
         name="expectedTime"
@@ -100,7 +117,7 @@ const TaskInputForm = ({ onSubmit, categories }) => {
         min="1"
         required
       />
-      
+
       <textarea
         name="notes"
         placeholder="Notes (optional)..."
@@ -108,7 +125,7 @@ const TaskInputForm = ({ onSubmit, categories }) => {
         onChange={handleChange}
         rows="3"
       />
-      
+
       <button type="submit" className="add-task-button">
         Add Task
       </button>
@@ -121,7 +138,7 @@ TaskInputForm.propTypes = {
   categories: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string.isRequired,
-    })
+    }),
   ).isRequired,
 };
 

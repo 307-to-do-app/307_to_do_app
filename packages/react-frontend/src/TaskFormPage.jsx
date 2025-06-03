@@ -8,7 +8,7 @@ function TaskFormPage() {
 
   // Get categories from localStorage (same as MyApp)
   useEffect(() => {
-    const savedCategories = localStorage.getItem('crumblist-categories');
+    const savedCategories = localStorage.getItem("crumblist-categories");
     if (savedCategories) {
       setCategories(JSON.parse(savedCategories));
     } else {
@@ -19,45 +19,48 @@ function TaskFormPage() {
         { name: "Errands" },
         { name: "Health" },
         { name: "Fitness" },
-        { name: "Chores" }
+        { name: "Chores" },
       ]);
     }
 
     // Listen for storage changes (when categories are updated in MyApp)
     const handleStorageChange = (e) => {
-      if (e.key === 'crumblist-categories') {
+      if (e.key === "crumblist-categories") {
         setCategories(JSON.parse(e.newValue));
       }
     };
 
-    window.addEventListener('storage', handleStorageChange);
-    
+    window.addEventListener("storage", handleStorageChange);
+
     // Also listen for focus (when returning from MyApp)
     const handleFocus = () => {
-      const updatedCategories = localStorage.getItem('crumblist-categories');
+      const updatedCategories = localStorage.getItem("crumblist-categories");
       if (updatedCategories) {
         setCategories(JSON.parse(updatedCategories));
       }
     };
 
-    window.addEventListener('focus', handleFocus);
+    window.addEventListener("focus", handleFocus);
 
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('focus', handleFocus);
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("focus", handleFocus);
     };
   }, []);
 
   const handleFormSubmit = (task) => {
     console.log("Submitting to backend:", task);
-    
-    fetch("https://crumblist-g5htfcg7afh8ehdw.canadacentral-01.azurewebsites.net/tasks", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+
+    fetch(
+      "https://crumblist-g5htfcg7afh8ehdw.canadacentral-01.azurewebsites.net/tasks",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(task),
       },
-      body: JSON.stringify(task),
-    })
+    )
       .then((res) => {
         console.log("Response status:", res.status);
         if (!res.ok) {

@@ -9,13 +9,16 @@ const Signup = () => {
 
   const handleSignup = async () => {
     try {
-      const response = await fetch("https://crumblist-g5htfcg7afh8ehdw.canadacentral-01.azurewebsites.net/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        "https://crumblist-g5htfcg7afh8ehdw.canadacentral-01.azurewebsites.net/signup",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
         },
-        body: JSON.stringify({ username, password }),
-      });
+      );
 
       const result = await response.json();
 
@@ -27,7 +30,6 @@ const Signup = () => {
       alert("User created successfully!");
       console.log("Signed up:", result);
       navigate("/login");
-
     } catch (err) {
       console.error("Signup error:", err);
       alert("Something went wrong during signup.");
@@ -57,7 +59,10 @@ const Signup = () => {
           <button className="butter-button" onClick={handleSignup}>
             🧈 Create Account
           </button>
-          <button className="signup-link-button" onClick={() => navigate("/login")}>
+          <button
+            className="signup-link-button"
+            onClick={() => navigate("/login")}
+          >
             ← Back to Login
           </button>
         </div>
