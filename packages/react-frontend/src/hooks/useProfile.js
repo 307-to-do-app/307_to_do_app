@@ -1,3 +1,5 @@
+// logic only, manages the user profle
+
 import { useState, useEffect } from "react";
 
 export const useProfile = () => {

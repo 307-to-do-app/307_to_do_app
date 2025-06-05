@@ -1859,7 +1859,7 @@ caption {
   cursor: pointer;
   box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
   transition: all 0.3s ease;
-  margin-top: 10px;
+  /* margin-top: 10px; */
   width: 100%;
   display: flex;
   align-items: center;

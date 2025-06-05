@@ -1,11 +1,11 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import "./main.css";
+import "./styles/main.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import MyApp from "./MyApp";
-import TaskFormPage from "./TaskFormPage";
-import Login from "./Login"; // also near your other imports
-import Signup from "./Signup";
+import MyApp from "./pages/MyApp";
+import TaskFormPage from "./components/TaskFormPage.jsx";
+import Login from "./pages/Login";
+import Signup from "./components/Signup";
 
 const container = document.getElementById("root");
 const root = createRoot(container);

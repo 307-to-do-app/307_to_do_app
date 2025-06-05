@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./Login.css"; // reusing the butter styling
+import "../styles/Login.css";
 
 const Signup = () => {
   const [username, setUsername] = useState("");
